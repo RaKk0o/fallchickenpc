@@ -23,7 +23,8 @@ namespace FrenzyFactory.Gameplay
         {
             yield return new WaitForEndOfFrame();
             NetworkManager.Singleton.LocalClient.PlayerObject.transform.position = new Vector3(0, 1.5f, 0);
-
+            Debug.Log(NetworkManager.Singleton.LocalClientId);
         }
+
     }
 }
