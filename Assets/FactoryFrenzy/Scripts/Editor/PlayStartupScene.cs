@@ -17,7 +17,7 @@ class PlayStartupScene
     /// <summary>
     /// Path to the startup scene.
     /// </summary>
-    static readonly string startutpScenePath = "Assets/PropHunt/Scenes/Startup.unity";
+    static readonly string startutpScenePath = "Assets/FactoryFrenzy/Scenes/Startup.unity";
 
 
     static PlayStartupScene()

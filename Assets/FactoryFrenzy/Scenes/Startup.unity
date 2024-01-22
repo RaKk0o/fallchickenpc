@@ -259,7 +259,7 @@ GameObject:
   - component: {fileID: 1238177461}
   - component: {fileID: 1238177460}
   m_Layer: 0
-  m_Name: LoadLobby
+  m_Name: LoadMainMenu
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

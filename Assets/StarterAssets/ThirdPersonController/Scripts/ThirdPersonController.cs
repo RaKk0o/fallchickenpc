@@ -1,4 +1,7 @@
-﻿ using UnityEngine;
+﻿using Cinemachine;
+using Unity.Netcode;
+using Unity.VisualScripting;
+using UnityEngine;
 #if ENABLE_INPUT_SYSTEM 
 using UnityEngine.InputSystem;
 #endif
@@ -12,7 +15,7 @@ namespace StarterAssets
 #if ENABLE_INPUT_SYSTEM 
     [RequireComponent(typeof(PlayerInput))]
 #endif
-    public class ThirdPersonController : MonoBehaviour
+    public class ThirdPersonController : NetworkBehaviour
     {
         [Header("Player")]
         [Tooltip("Move speed of the character in m/s")]
@@ -103,11 +106,14 @@ namespace StarterAssets
         private StarterAssetsInputs _input;
         private GameObject _mainCamera;
 
+        private CinemachineFreeLook _cinemachineCamera;
+        [SerializeField] private AudioListener _audioListener;
+
         private const float _threshold = 0.01f;
 
         private bool _hasAnimator;
 
-        private bool IsCurrentDeviceMouse
+		private bool IsCurrentDeviceMouse
         {
             get
             {
@@ -127,6 +133,11 @@ namespace StarterAssets
             {
                 _mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
             }
+
+            if (_cinemachineCamera == null)
+            {
+                _cinemachineCamera = FindObjectOfType<CinemachineFreeLook>();
+            }
         }
 
         private void Start()
@@ -136,11 +147,6 @@ namespace StarterAssets
             _hasAnimator = TryGetComponent(out _animator);
             _controller = GetComponent<CharacterController>();
             _input = GetComponent<StarterAssetsInputs>();
-#if ENABLE_INPUT_SYSTEM 
-            _playerInput = GetComponent<PlayerInput>();
-#else
-			Debug.LogError( "Starter Assets package is missing dependencies. Please use Tools/Starter Assets/Reinstall Dependencies to fix it");
-#endif
 
             AssignAnimationIDs();
 
@@ -149,13 +155,33 @@ namespace StarterAssets
             _fallTimeoutDelta = FallTimeout;
         }
 
-        private void Update()
-        {
-            _hasAnimator = TryGetComponent(out _animator);
+		public override void OnNetworkSpawn()
+		{
+			if (IsOwner)
+            {
+                _playerInput = GetComponent<PlayerInput>();
+                _playerInput.enabled = true;
+                _cinemachineCamera.Priority = 1;
+                _audioListener.enabled = true;
+            }
+            else
+            {
+                _cinemachineCamera.Priority = 0;
+            }
+		}
 
-            JumpAndGravity();
-            GroundedCheck();
-            Move();
+
+		private void Update()
+        {
+            if (IsOwner)
+            {
+				_hasAnimator = TryGetComponent(out _animator);
+
+				JumpAndGravity();
+				GroundedCheck();
+				Move();
+			}
+            
         }
 
         private void LateUpdate()
