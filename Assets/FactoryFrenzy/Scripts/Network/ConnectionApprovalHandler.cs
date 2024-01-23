@@ -9,7 +9,7 @@ public class ConnectionApprovalHandler : MonoBehaviour
 {
     private NetworkManager m_NetworkManager;
 
-    public int MaxNumberOfPlayers = 6;
+    public int MaxNumberOfPlayers = 10;
     private int _numberOfPlayers = 0;
 
     // Start is called before the first frame update

@@ -1,40 +1,33 @@
 using System.Collections;
-using System.Collections.Generic;
 using Unity.Netcode;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class PlayerSpawnManager : NetworkBehaviour
 {
-	[SerializeField] private List<GameObject> _spawnPoints = new();
-	[SerializeField] private GameObject _player;
-	private int _clientId;
+	[SerializeField] private Transform _spawnPoints;
+	[SerializeField] private SpawnLogic _spawnLogic;
+	private Vector3 _spawnPosition;
 
-
-	public override void OnNetworkSpawn()
+	public Vector3 GetFreeSpawnpoint()
 	{
-		//StartCoroutine(PlacePlayerCoroutine());
-		NetworkManager.Singleton.ConnectionApprovalCallback += SpawnPlayerObject;
+        foreach (Transform spawn in _spawnPoints)
+		{
+			if (spawn.CompareTag("SpawnPoint"))
+			{
+				Debug.Log(spawn.name +" "+_spawnLogic.IsOccupied.Value);
+				if (_spawnLogic.IsOccupied.Value)
+				{
+					Debug.Log(spawn.gameObject.name + " occupied");
+				}
+				else
+				{
+					_spawnPosition = new Vector3(spawn.position.x, spawn.position.y + 5.0f, spawn.position.z);
+					Debug.Log(spawn.gameObject.name + " " + _spawnPosition);
+					return _spawnPosition;
+				}
+			}
+			
+		}
+		return _spawnPosition;
 	}
-
-	private IEnumerator PlacePlayerCoroutine()
-	{
-		yield return new WaitForEndOfFrame();
-		_clientId = (int)NetworkManager.Singleton.LocalClientId;
-		Vector3 spawnPosition = new Vector3(_spawnPoints[_clientId].transform.position.x, _spawnPoints[_clientId].transform.position.y + 5.0f, _spawnPoints[_clientId].transform.position.z);
-		//NetworkManager.Singleton.LocalClient.PlayerObject.transform.position = spawnPosition;
-		Debug.Log("Client Id : "+ _clientId + ". Position : " +spawnPosition);
-	}
-
-	private void SpawnPlayerObject(NetworkManager.ConnectionApprovalRequest request, NetworkManager.ConnectionApprovalResponse response)
-	{
-		response.Approved = true;
-		Vector3 spawnPosition = new Vector3(_spawnPoints[_clientId].transform.position.x, _spawnPoints[_clientId].transform.position.y + 5.0f, _spawnPoints[_clientId].transform.position.z);
-
-		NetworkManager.Singleton.LocalClient.PlayerObject.transform.position = spawnPosition;
-		Debug.Log("Client Id : " + _clientId + ". Position : " + spawnPosition);
-	}
-
-
 }

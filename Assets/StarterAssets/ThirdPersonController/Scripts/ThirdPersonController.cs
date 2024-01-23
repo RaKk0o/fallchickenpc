@@ -1,4 +1,5 @@
 ﻿using Cinemachine;
+using TMPro;
 using Unity.Netcode;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -108,6 +109,7 @@ namespace StarterAssets
 
         private CinemachineFreeLook _cinemachineCamera;
         [SerializeField] private AudioListener _audioListener;
+		[SerializeField] private PlayerSpawnManager _spawnManager;
 
         private const float _threshold = 0.01f;
 
@@ -160,9 +162,10 @@ namespace StarterAssets
 			if (IsOwner)
             {
                 _playerInput = GetComponent<PlayerInput>();
-                _playerInput.enabled = true;
+				_playerInput.enabled = true;
                 _cinemachineCamera.Priority = 1;
                 _audioListener.enabled = true;
+                transform.position = _spawnManager.GetFreeSpawnpoint();
             }
             else
             {
