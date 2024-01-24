@@ -37,7 +37,7 @@ public class ConnectionApprovalHandler : MonoBehaviour
             response.Reason = "Too many players in lobby.";
         }
         response.Approved = isApproved;
-        response.CreatePlayerObject = !isApproved;
+        //response.CreatePlayerObject = isApproved;
         response.Position = new Vector3(0, 3, 0);
     }
 

@@ -54,7 +54,7 @@ public class MenuManager : MonoBehaviour
 		CloseMenu();
 	}
 
-	public void OnLaunchPress() 
+	public void OnLaunchPress()
 	{
 		NetworkManager.Singleton.SceneManager.LoadScene("Game", LoadSceneMode.Single);
 	}
