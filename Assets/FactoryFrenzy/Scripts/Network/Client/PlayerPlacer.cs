@@ -11,7 +11,7 @@ public class PlayerPlacer : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
-		NetworkManager.Singleton.SceneManager.OnLoadEventCompleted += SpawnPlayer;
+		if (IsHost)	NetworkManager.Singleton.SceneManager.OnLoadEventCompleted += SpawnPlayer;
     }
 
 	public Vector3 GetFreeSpawnpoint()
@@ -31,6 +31,7 @@ public class PlayerPlacer : NetworkBehaviour
 				else
 				{
 					Vector3 spawnPosition = new Vector3(spawn.transform.position.x, spawn.transform.position.y + 5.0f, spawn.transform.position.z);
+					spawnStatus.IsOccupied.Value = true;
 					Debug.Log(spawn.gameObject.name + " " + spawnPosition);
 					return spawnPosition;
 				}

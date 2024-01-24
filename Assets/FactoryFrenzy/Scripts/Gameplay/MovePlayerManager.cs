@@ -16,7 +16,6 @@ public class MovePlayerManager : MonoBehaviour
 			if (spawn.CompareTag("SpawnPoint"))
 			{
 				SpawnLogic spawnStatus = spawn.GetComponent<SpawnLogic>();
-				Debug.Log(spawnStatus.name + " " + spawnStatus.IsOccupied.Value);
 				if (spawnStatus.IsOccupied.Value)
 				{
 					Debug.Log(spawn.gameObject.name + " occupied");
@@ -24,7 +23,6 @@ public class MovePlayerManager : MonoBehaviour
 				else
 				{
 					_spawnPosition = new Vector3(spawn.transform.position.x, spawn.transform.position.y + 5.0f, spawn.transform.position.z);
-					Debug.Log(spawn.gameObject.name + " " + _spawnPosition);
 					return _spawnPosition;
 				}
 			}
@@ -35,8 +33,6 @@ public class MovePlayerManager : MonoBehaviour
 
 	public void MovePlayer(Vector3 newPlayerPosition)
 	{
-		Debug.Log("Moving Player " + NetworkManager.Singleton.LocalClientId);
-		Debug.Log(newPlayerPosition);
 		NetworkManager.Singleton.LocalClient.PlayerObject.transform.position  = newPlayerPosition;
 	}
 }
