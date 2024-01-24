@@ -6,12 +6,19 @@ using UnityEngine;
 public class TurretControl : MonoBehaviour
 {
     Transform _Player;
-    float dist;
-    public float howClose;
     public Transform head, canon;
     public GameObject _bullet;
     public float fireRate;
     private float nextFire;
+    public float rotationSpeed;
+
+    private enum TurretState
+    {
+        Idle,
+        Chasing,
+        Shooting
+    }
+    private TurretState currentState = TurretState.Idle;
 
     void Start()
     {
@@ -19,18 +26,42 @@ public class TurretControl : MonoBehaviour
     }
     private void Update()
     {
-        dist = Vector3.Distance(_Player.position, transform.position);
-        if (dist < howClose)
+        switch (currentState)
         {
-            head.LookAt(_Player);
-            if (Time.time >= nextFire)
-            {
-                nextFire = Time.time + 1f / fireRate;
-                shoot();
-            }
-        }
+               case TurretState.Idle:
+                Idle();
+                break;
+               case TurretState.Chasing:
+                Chasing();
+                break;
+               case TurretState.Shooting:
+                Shooting();
+                break;
+        }     
     }
-
+    void Idle()
+    {
+       // head.Rotate(Vector3.up, rotationSpeed * Time.deltaTime);
+    }
+    void Chasing()
+    {
+        head.LookAt(_Player);
+        if (Time.time > nextFire)
+        {
+            nextFire = Time.time + 1f / fireRate;
+            shoot();
+        }
+        Debug.Log("Chasing");
+    }
+    void Shooting()
+    {
+        Debug.Log("Shooting");
+        currentState = TurretState.Idle;
+    }
+    public void SetChasingState()
+    {
+        currentState = TurretState.Chasing;
+    }
     void shoot()
     {
         GameObject clone = Instantiate(_bullet, canon.position, head.rotation);
