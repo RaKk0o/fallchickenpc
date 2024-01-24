@@ -106,7 +106,8 @@ namespace FrenzyFactory.UI {
 		{
 			if (serverRpcParams.Receive.SenderClientId != NetworkManager.Singleton.LocalClientId) { return; }
 			if (!IsEveryoneReady()) { return; }
-			NetworkManager.Singleton.SceneManager.LoadScene("Game", LoadSceneMode.Single);
+			ConnectionApprovalHandler.instance.StartGame();
+			//NetworkManager.Singleton.SceneManager.LoadScene("Game", LoadSceneMode.Single);
 		}
 
 		public void OnLeaveClicked()

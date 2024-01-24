@@ -5,47 +5,82 @@ using Unity.Netcode;
 using UnityEngine;
 using static Unity.Netcode.NetworkManager;
 
-public class ConnectionApprovalHandler : MonoBehaviour
+namespace FrenzyFactory.UI
 {
-    private NetworkManager m_NetworkManager;
 
-    public int MaxNumberOfPlayers = 10;
-    private int _numberOfPlayers = 0;
-
-    // Start is called before the first frame update
-    void Start()
+    public class ConnectionApprovalHandler : MonoBehaviour
     {
-        m_NetworkManager = GetComponent<NetworkManager>();
-        if (m_NetworkManager != null)
+        public static ConnectionApprovalHandler instance;
+        private NetworkManager m_NetworkManager;
+
+        [SerializeField] private int MaxNumberOfPlayers = 10;
+        private int _numberOfPlayers = 0;
+
+        private bool gameInProgress;
+
+        private void Awake()
         {
-            m_NetworkManager.OnClientDisconnectCallback += OnClientDisconnectCallback;
-            m_NetworkManager.ConnectionApprovalCallback += CheckApprovalCallback;
+            if (instance != null && instance != this)
+            {
+                Destroy(gameObject);
+                return;
+            }
+
+            instance = this;
         }
-        if(MaxNumberOfPlayers == 0)
+
+			// Start is called before the first frame update
+			void Start()
         {
-            MaxNumberOfPlayers++;
+            m_NetworkManager = GetComponent<NetworkManager>();
+            if (m_NetworkManager != null)
+            {
+                m_NetworkManager.OnClientDisconnectCallback += OnClientDisconnectCallback;
+                m_NetworkManager.ConnectionApprovalCallback += CheckApprovalCallback;
+            }
+            if (MaxNumberOfPlayers == 0)
+            {
+                MaxNumberOfPlayers++;
+            }
+        }
+
+        public void StartGame()
+        {
+            gameInProgress = true;
+            NetworkManager.Singleton.SceneManager.LoadScene("Game", UnityEngine.SceneManagement.LoadSceneMode.Single);
+        }
+
+        public void EndRound()
+        {
+            gameInProgress = false;
+            NetworkManager.Singleton.SceneManager.LoadScene("Lobby", UnityEngine.SceneManagement.LoadSceneMode.Single);
+        }
+
+        private void CheckApprovalCallback(ConnectionApprovalRequest request, ConnectionApprovalResponse response)
+        {
+            bool isApproved = true;
+            _numberOfPlayers++;
+            if (_numberOfPlayers > MaxNumberOfPlayers)
+            {
+                isApproved = false;
+                response.Reason = "Too many players in lobby.";
+            }
+            if (gameInProgress)
+            {
+                isApproved = false;
+                response.Reason = "Game in progress.";
+            }
+            response.Approved = isApproved;
+            response.Position = new Vector3(0, 3, 0);
+        }
+
+        private void OnClientDisconnectCallback(ulong clientID)
+        {
+            if (!m_NetworkManager.IsServer && m_NetworkManager.DisconnectReason != string.Empty && !m_NetworkManager.IsApproved)
+            {
+                Debug.Log($"Approval Declined Reason: {m_NetworkManager.DisconnectReason}");
+            }
+            _numberOfPlayers--;
         }
     }
-
-    private void CheckApprovalCallback(ConnectionApprovalRequest request, ConnectionApprovalResponse response)
-    {
-        bool isApproved = true;
-        _numberOfPlayers++;
-        if (_numberOfPlayers > MaxNumberOfPlayers)
-        {
-            isApproved = false;
-            response.Reason = "Too many players in lobby.";
-        }
-        response.Approved = isApproved;
-        response.Position = new Vector3(0, 3, 0);
-    }
-
-	private void OnClientDisconnectCallback(ulong clientID)
-	{
-        if (!m_NetworkManager.IsServer && m_NetworkManager.DisconnectReason != string.Empty && !m_NetworkManager.IsApproved)
-        {
-            Debug.Log($"Approval Declined Reason: {m_NetworkManager.DisconnectReason}");
-        }
-        _numberOfPlayers--;
-	}
 }
