@@ -1,8 +1,6 @@
-using UnityEngine;
+/*using UnityEngine;
 #if ENABLE_INPUT_SYSTEM
 using UnityEngine.InputSystem;
-using static UnityEngine.InputSystem.InputAction;
-
 #endif
 
 namespace StarterAssets
@@ -23,22 +21,22 @@ namespace StarterAssets
 		public bool cursorInputForLook = true;
 
 #if ENABLE_INPUT_SYSTEM
-		public void OnMove(CallbackContext context)
+		public void OnMove(InputValue value)
 		{
-			move = context.ReadValue<Vector2>();
+			MoveInput(value.Get<Vector2>());
 		}
 
-		public void OnLook(CallbackContext context)
+		public void OnLook(InputValue value)
 		{
-			if (Cursor.lockState == CursorLockMode.Locked)
+			if(cursorInputForLook)
 			{
-				look = context.ReadValue<Vector2>();
+				LookInput(value.Get<Vector2>());
 			}
 		}
-		public void OnJump(CallbackContext context)
+
+		public void OnJump(InputValue value)
 		{
-			if (!context.performed) return;
-			jump = true;
+			JumpInput(value.isPressed);
 		}
 
 		public void OnSprint(InputValue value)
@@ -79,4 +77,4 @@ namespace StarterAssets
 		}
 	}
 	
-}
+}*/

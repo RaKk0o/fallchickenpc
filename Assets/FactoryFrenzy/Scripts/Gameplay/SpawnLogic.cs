@@ -7,13 +7,16 @@ public class SpawnLogic : NetworkBehaviour
 {
     public NetworkVariable<bool> IsOccupied = new NetworkVariable<bool>();
 
-	public override void OnNetworkSpawn()
+	private void Start()
 	{
-		if (IsServer)
+		if (IsHost)
 		{
 			IsOccupied.Value = false;
 		}
-		Debug.Log("Patate");
+	}
+
+	public override void OnNetworkSpawn()
+	{
 		IsOccupied.OnValueChanged += OnStateChange;
 	}
 
@@ -24,13 +27,12 @@ public class SpawnLogic : NetworkBehaviour
 
 	private void OnStateChange(bool previous, bool current)
 	{
-		Debug.Log(current);
+		IsOccupied.Value = current;
 	}
 
 	private void OnTriggerEnter(Collider collider)
 	{
-		Debug.Log("TriggerEnter");
-		if (collider.gameObject.CompareTag("Player"))
+		if (collider.gameObject.CompareTag("Player") && IsOwner)
 		{
 			ToggleSpawnPointServerRpc();
 		}
@@ -38,7 +40,6 @@ public class SpawnLogic : NetworkBehaviour
 
 	private void OnTriggerExit(Collider collider)
 	{
-		Debug.Log("TriggerExit");
 		if (collider.gameObject.CompareTag("Player"))
 		{
 			ToggleSpawnPointServerRpc();
@@ -52,4 +53,5 @@ public class SpawnLogic : NetworkBehaviour
 		// and ultimately invoke `OnValueChanged` on receivers
 		IsOccupied.Value = !IsOccupied.Value;
 	}
+
 }
