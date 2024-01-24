@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PlayerDetection : MonoBehaviour
 {
-    private TurretControl turretControl;
+    [SerializeField] private TurretControl turretControl;
     // Start is called before the first frame update
     void Start()
     {
@@ -16,7 +16,7 @@ public class PlayerDetection : MonoBehaviour
         Debug.Log("Player detected");
         if (other.CompareTag("Player"))
         {
-            turretControl.SetChasingState();
+            turretControl.SetShootingState();
         }
     }
 }

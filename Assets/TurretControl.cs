@@ -12,6 +12,8 @@ public class TurretControl : MonoBehaviour
     private float nextFire;
     public float rotationSpeed;
 
+    private int _numberPlayerInside;
+
     private enum TurretState
     {
         Idle,
@@ -41,31 +43,57 @@ public class TurretControl : MonoBehaviour
     }
     void Idle()
     {
-       // head.Rotate(Vector3.up, rotationSpeed * Time.deltaTime);
+       head.Rotate(Vector3.up, rotationSpeed * Time.deltaTime);
     }
     void Chasing()
     {
-        head.LookAt(_Player);
-        if (Time.time > nextFire)
-        {
-            nextFire = Time.time + 1f / fireRate;
-            shoot();
-        }
-        Debug.Log("Chasing");
+		Vector3 relativePos = _Player.position - head.transform.position;
+		Quaternion rotation = Quaternion.LookRotation(new Vector3 (relativePos.x, 0, relativePos.z), Vector3.up);
+		head.transform.rotation = Quaternion.RotateTowards(head.transform.rotation, rotation, Time.deltaTime * rotationSpeed);
     }
-    void Shooting()
+    public void Shooting()
     {
         Debug.Log("Shooting");
-        currentState = TurretState.Idle;
-    }
+		if (Time.time > nextFire)
+		{
+			nextFire = Time.time + 1f / fireRate;
+			shoot();
+		}
+        SetChasingState();
+	}
     public void SetChasingState()
     {
         currentState = TurretState.Chasing;
     }
+
+    public void SetShootingState()
+    {
+		currentState = TurretState.Shooting;
+	}
     void shoot()
     {
         GameObject clone = Instantiate(_bullet, canon.position, head.rotation);
         clone.GetComponent<Rigidbody>().AddForce(head.forward * 500);
         Destroy(clone, 3);
     }
+
+	private void OnTriggerEnter(Collider other)
+	{
+		Debug.Log("Player detected");
+		if (other.CompareTag("Player"))
+		{
+            _numberPlayerInside++ ;
+			SetChasingState();
+		}
+	}
+
+	private void OnTriggerExit(Collider other)
+	{
+		Debug.Log("Player detected");
+		if (other.CompareTag("Player"))
+		{
+            _numberPlayerInside--;
+            if (_numberPlayerInside == 0) Idle();
+		}
+	}
 }
