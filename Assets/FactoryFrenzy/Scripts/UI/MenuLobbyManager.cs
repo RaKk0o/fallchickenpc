@@ -19,6 +19,7 @@ namespace FrenzyFactory.UI {
 		private void Awake()
 		{
 			lobbyPlayers = new NetworkList<LobbyPlayerState>();
+			Cursor.lockState = CursorLockMode.None;
 		}
 
 		public override void OnNetworkSpawn()
@@ -106,8 +107,7 @@ namespace FrenzyFactory.UI {
 		{
 			if (serverRpcParams.Receive.SenderClientId != NetworkManager.Singleton.LocalClientId) { return; }
 			if (!IsEveryoneReady()) { return; }
-			ConnectionApprovalHandler.instance.StartGame();
-			//NetworkManager.Singleton.SceneManager.LoadScene("Game", LoadSceneMode.Single);
+			ConnectionApprovalHandler.instance.StartGame(lobbyPlayers.Count);
 		}
 
 		public void OnLeaveClicked()

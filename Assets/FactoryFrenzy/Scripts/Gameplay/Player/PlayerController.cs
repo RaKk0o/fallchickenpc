@@ -1,11 +1,9 @@
 ﻿using Cinemachine;
-using System.Collections;
-using TMPro;
 using Unity.Netcode;
-using Unity.VisualScripting;
 using UnityEngine;
 #if ENABLE_INPUT_SYSTEM 
 using UnityEngine.InputSystem;
+
 #endif
 
 /* Note: animations are called via the controller for both the character and capsule using animator null checks
@@ -109,6 +107,9 @@ public class PlayerController : NetworkBehaviour
     private CinemachineFreeLook _cinemachineCamera;
     [SerializeField] private AudioListener _audioListener;
 
+    public Vector3 Checkpoint;
+
+
     private const float _threshold = 0.01f;
 
     private bool _hasAnimator;
@@ -138,7 +139,10 @@ public class PlayerController : NetworkBehaviour
         {
             _cinemachineCamera = FindObjectOfType<CinemachineFreeLook>();
         }
-    }
+
+        Checkpoint = GameObject.Find("SpawnPoint1").gameObject.transform.position;
+
+	}
 
     private void Start()
     {
@@ -153,6 +157,8 @@ public class PlayerController : NetworkBehaviour
         // reset our timeouts on start
         _jumpTimeoutDelta = JumpTimeout;
         _fallTimeoutDelta = FallTimeout;
+
+        Cursor.lockState = CursorLockMode.Locked;
     }
 
     public override void OnNetworkSpawn()
@@ -160,7 +166,7 @@ public class PlayerController : NetworkBehaviour
         if (IsOwner)
         {
             _playerInput = GetComponent<PlayerInput>();
-            _playerInput.enabled = true;
+            //_playerInput.enabled = true;
             _cinemachineCamera.Priority = 1;
             _audioListener.enabled = true;
 		}
@@ -370,6 +376,12 @@ public class PlayerController : NetworkBehaviour
             _verticalVelocity += Gravity * Time.deltaTime;
         }
     }
+    /*public void LoadCheckPoint()
+    {
+        _controller.enabled = false;
+		transform.position = Checkpoint;
+		_controller.enabled = true;
+	}*/
 
     private static float ClampAngle(float lfAngle, float lfMin, float lfMax)
     {

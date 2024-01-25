@@ -1,19 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
-public class PlayerDetection : MonoBehaviour
+public class PlayerDetection : NetworkBehaviour
 {
     [SerializeField] private TurretControl turretControl;
     // Start is called before the first frame update
-    void Start()
-    {
-        turretControl = GetComponentInParent<TurretControl>();
-    }
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log("Player detected");
         if (other.CompareTag("Player"))
         {
             turretControl.SetShootingState();
