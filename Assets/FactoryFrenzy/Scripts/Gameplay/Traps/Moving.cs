@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
 public class Moving : MonoBehaviour
@@ -25,7 +26,7 @@ public class Moving : MonoBehaviour
             joueur.parent = transform;
         }
 
-        float f = Mathf.PingPong(Time.time, tempsDeplacement) / tempsDeplacement;
+        float f = Mathf.PingPong(NetworkManager.Singleton.LocalTime.TimeAsFloat, tempsDeplacement) / tempsDeplacement;
         transform.position = Vector3.Lerp(pointDebut.position, pointFin.position, f);
 
         if (f >= 0.5f)
