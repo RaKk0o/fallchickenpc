@@ -1,10 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
-using System;
-using UnityEngine.SceneManagement;
-using FrenzyFactory.UI;
 
 public class FinishLine : NetworkBehaviour
 {
@@ -22,10 +17,8 @@ public class FinishLine : NetworkBehaviour
 	{
 		if (other.CompareTag("Player"))
 		{
-				_gameMaster.DisplayScoreBoardClientRpc("Player" + other.gameObject.GetComponent<NetworkObject>().OwnerClientId);
-			//other.GetComponent<CharacterController>().enabled = false;
-			//other.transform.position = victoryIsland.position;
-			//other.GetComponent<CharacterController>().enabled = true;
+			_gameMaster.DisplayScoreBoardClientRpc("Player" + other.gameObject.GetComponent<NetworkObject>().OwnerClientId);
+	
 			other.GetComponent<PlayerController>().Checkpoint = victoryIsland.position;
 			other.GetComponent<PlayerController>().LoadCheckPoint();
 			if (isFirst && IsOwner)
