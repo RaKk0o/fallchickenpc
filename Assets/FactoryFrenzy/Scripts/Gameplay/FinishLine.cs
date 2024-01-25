@@ -9,6 +9,7 @@ using FrenzyFactory.UI;
 public class FinishLine : NetworkBehaviour
 {
 	[SerializeField] GameMaster _gameMaster;
+	public Transform cube;
 	private bool isFirst = true;
 
 	public override void OnNetworkSpawn()
@@ -19,10 +20,13 @@ public class FinishLine : NetworkBehaviour
 
 	private void OnTriggerEnter(Collider other)
 	{
-		if (other.CompareTag("Player") && IsOwner)
+		if (other.CompareTag("Player") )
 		{
 			_gameMaster.DisplayScoreBoardClientRpc("Player" + other.gameObject.GetComponent<NetworkObject>().OwnerClientId);
-			if (isFirst)
+			other.GetComponent<CharacterController>().enabled = false;
+			other.transform.position = cube.position;
+			other.GetComponent<CharacterController>().enabled = true;
+			if (isFirst && IsOwner)
 			{
 				isFirst = false;
 				_gameMaster.ToggleGameStatusServerRpc();

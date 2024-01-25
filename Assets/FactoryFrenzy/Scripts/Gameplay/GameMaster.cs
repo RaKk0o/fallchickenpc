@@ -124,10 +124,14 @@ public class GameMaster : NetworkBehaviour
 	[ServerRpc]
 	private void EndGameServerRpc()
 	{
-		endOfGameDisplay.SetActive(true);
+		EndGameClientRpc();
 		StartCoroutine(EndGameCoroutine(5.0f));
 	}
-
+	[ClientRpc]
+	private void EndGameClientRpc()
+	{
+		endOfGameDisplay.SetActive(true);
+	}
 
 	private IEnumerator EndGameCoroutine(float waitTime)
 	{
