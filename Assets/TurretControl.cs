@@ -93,7 +93,7 @@ public class TurretControl : MonoBehaviour
 		if (other.CompareTag("Player"))
 		{
             _numberPlayerInside--;
-            if (_numberPlayerInside == 0) Idle();
+            if (_numberPlayerInside == 0) currentState = TurretState.Idle;
 		}
 	}
 }
