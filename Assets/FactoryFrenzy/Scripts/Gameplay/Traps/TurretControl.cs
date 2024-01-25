@@ -1,9 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using Unity.VisualScripting.FullSerializer;
 using UnityEngine;
 
-public class TurretControl : MonoBehaviour
+public class TurretControl : NetworkBehaviour
 {
     [SerializeField] private Transform _Player;
 	[SerializeField] private Transform head, canon;
@@ -76,20 +77,21 @@ public class TurretControl : MonoBehaviour
 
 	private void OnTriggerEnter(Collider other)
 	{
-		Debug.Log("Player detected");
 		if (other.CompareTag("Player"))
 		{
-            _numberPlayerInside++ ;
+			_numberPlayerInside++;
+			Debug.Log("Player detected " + _numberPlayerInside);
 			SetChasingState();
 		}
 	}
 
 	private void OnTriggerExit(Collider other)
 	{
-		Debug.Log("Player detected");
+		
 		if (other.CompareTag("Player"))
 		{
-            _numberPlayerInside--;
+			_numberPlayerInside--;
+			Debug.Log("Player leaving " + _numberPlayerInside);
             if (_numberPlayerInside == 0) Idle();
 		}
 	}
