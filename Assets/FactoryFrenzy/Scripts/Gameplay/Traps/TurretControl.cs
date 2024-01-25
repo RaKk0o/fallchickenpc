@@ -1,17 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.Netcode;
 using Unity.VisualScripting.FullSerializer;
 using UnityEngine;
 
-public class TurretControl : NetworkBehaviour
+public class TurretControl : MonoBehaviour
 {
-    [SerializeField] private Transform _Player;
-	[SerializeField] private Transform head, canon;
-	[SerializeField] private GameObject _bullet;
-	private float fireRate;
-	private float nextFire;
-	private float rotationSpeed;
+    Transform _Player;
+    public Transform head, canon;
+    public GameObject _bullet;
+    public float fireRate;
+    private float nextFire;
+    public float rotationSpeed;
 
     private int _numberPlayerInside;
 
@@ -23,7 +22,10 @@ public class TurretControl : NetworkBehaviour
     }
     private TurretState currentState = TurretState.Idle;
 
-
+    void Start()
+    {
+        _Player = GameObject.FindGameObjectWithTag("Player").transform;
+    }
     private void Update()
     {
         switch (currentState)
@@ -77,22 +79,21 @@ public class TurretControl : NetworkBehaviour
 
 	private void OnTriggerEnter(Collider other)
 	{
+		Debug.Log("Player detected");
 		if (other.CompareTag("Player"))
 		{
-			_numberPlayerInside++;
-			Debug.Log("Player detected " + _numberPlayerInside);
+            _numberPlayerInside++ ;
 			SetChasingState();
 		}
 	}
 
 	private void OnTriggerExit(Collider other)
 	{
-		
+		Debug.Log("Player detected");
 		if (other.CompareTag("Player"))
 		{
-			_numberPlayerInside--;
-			Debug.Log("Player leaving " + _numberPlayerInside);
-            if (_numberPlayerInside == 0) Idle();
+            _numberPlayerInside--;
+            if (_numberPlayerInside == 0) currentState = TurretState.Idle;
 		}
 	}
 }
