@@ -5,12 +5,12 @@ using UnityEngine;
 
 public class TurretControl : MonoBehaviour
 {
-    Transform _Player;
-    public Transform head, canon;
-    public GameObject _bullet;
-    public float fireRate;
-    private float nextFire;
-    public float rotationSpeed;
+    [SerializeField] private Transform _Player;
+	[SerializeField] private Transform head, canon;
+	[SerializeField] private GameObject _bullet;
+	private float fireRate;
+	private float nextFire;
+	private float rotationSpeed;
 
     private int _numberPlayerInside;
 
@@ -22,10 +22,7 @@ public class TurretControl : MonoBehaviour
     }
     private TurretState currentState = TurretState.Idle;
 
-    void Start()
-    {
-        _Player = GameObject.FindGameObjectWithTag("Player").transform;
-    }
+
     private void Update()
     {
         switch (currentState)
