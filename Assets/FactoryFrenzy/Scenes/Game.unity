@@ -2553,6 +2553,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2051165047460761608, guid: ed3e1058b25cc6044be87e6d2a6891f8,
+        type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 2262985155
+      objectReference: {fileID: 0}
     - target: {fileID: 2813591665489864937, guid: ed3e1058b25cc6044be87e6d2a6891f8,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -2607,11 +2612,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Turret
-      objectReference: {fileID: 0}
-    - target: {fileID: 7394360718876187898, guid: ed3e1058b25cc6044be87e6d2a6891f8,
-        type: 3}
-      propertyPath: GlobalObjectIdHash
-      value: 3053629968
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -3071,6 +3071,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2051165047460761608, guid: ed3e1058b25cc6044be87e6d2a6891f8,
+        type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 999848707
+      objectReference: {fileID: 0}
     - target: {fileID: 2813591665489864937, guid: ed3e1058b25cc6044be87e6d2a6891f8,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -3125,11 +3130,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Turret (1)
-      objectReference: {fileID: 0}
-    - target: {fileID: 7394360718876187898, guid: ed3e1058b25cc6044be87e6d2a6891f8,
-        type: 3}
-      propertyPath: GlobalObjectIdHash
-      value: 518656091
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

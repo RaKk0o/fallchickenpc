@@ -179,7 +179,7 @@ public class PlayerController : NetworkBehaviour
 
     private void Update()
     {
-        if (IsOwner)
+        if (IsOwner && _controller.enabled)
         {
             _hasAnimator = TryGetComponent(out _animator);
 

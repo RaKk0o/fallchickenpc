@@ -5,26 +5,14 @@ using UnityEngine;
 
 public class Moving : MonoBehaviour
 {
-    public Transform pointDebut;
-    public Transform pointFin;
-    public float tempsDeplacement;
+    [SerializeField] private Transform pointDebut;
+	[SerializeField] private Transform pointFin;
+	[SerializeField] private float tempsDeplacement;
 
-    private bool joueurPresent = false;
-    private Transform joueur;
-
-    // Start is called before the first frame update
-    void Start()
-    {
-
-    }
 
     // Update is called once per frame
     void Update()
     {
-        if (joueurPresent)
-        {
-            joueur.parent = transform;
-        }
 
         float f = Mathf.PingPong(NetworkManager.Singleton.LocalTime.TimeAsFloat, tempsDeplacement) / tempsDeplacement;
         transform.position = Vector3.Lerp(pointDebut.position, pointFin.position, f);
@@ -43,8 +31,7 @@ public class Moving : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            joueurPresent = true;
-            joueur = other.transform;
+			other.transform.parent = transform.parent;
         }
     }
 
@@ -52,9 +39,7 @@ public class Moving : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            joueurPresent = false;
-            joueur.parent = null;
-            joueur = null;
+			other.transform.parent = null;
         }
     }
 }
