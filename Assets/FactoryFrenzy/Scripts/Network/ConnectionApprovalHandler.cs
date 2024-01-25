@@ -17,6 +17,7 @@ namespace FrenzyFactory.UI
         private int _numberOfPlayers = 0;
 
         private bool gameInProgress;
+        public int PlayerCount;
 
         private void Awake()
         {
@@ -44,16 +45,18 @@ namespace FrenzyFactory.UI
             }
         }
 
-        public void StartGame()
+        public void StartGame(int playerCount)
         {
             gameInProgress = true;
-            NetworkManager.Singleton.SceneManager.LoadScene("Game", UnityEngine.SceneManagement.LoadSceneMode.Single);
+            PlayerCount = playerCount;
+			Singleton.SceneManager.LoadScene("Game", UnityEngine.SceneManagement.LoadSceneMode.Single);
         }
 
         public void EndRound()
         {
             gameInProgress = false;
-            NetworkManager.Singleton.SceneManager.LoadScene("Lobby", UnityEngine.SceneManagement.LoadSceneMode.Single);
+			Singleton.LocalClient.PlayerObject.Despawn();
+			Singleton.SceneManager.LoadScene("Lobby", UnityEngine.SceneManagement.LoadSceneMode.Single);
         }
 
         private void CheckApprovalCallback(ConnectionApprovalRequest request, ConnectionApprovalResponse response)
