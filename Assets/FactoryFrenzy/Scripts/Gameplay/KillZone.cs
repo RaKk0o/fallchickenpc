@@ -10,7 +10,7 @@ public class KillZone : NetworkBehaviour
     {
         if (other.CompareTag("Player"))
         {
-			//other.GetComponent<PlayerController>().LoadCheckPoint();
+			other.GetComponent<PlayerController>().LoadCheckPoint();
 		}
 	}
 }

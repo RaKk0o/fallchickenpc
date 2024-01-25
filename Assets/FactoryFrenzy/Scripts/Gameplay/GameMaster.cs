@@ -108,7 +108,7 @@ public class GameMaster : NetworkBehaviour
 
 
 	[ServerRpc(RequireOwnership = false)]
-	public void ToggleGameFinishedServerRpc()
+	public void ToggleGameStatusServerRpc()
 	{
 		isFinished.Value = !isFinished.Value;
 	}
@@ -123,7 +123,6 @@ public class GameMaster : NetworkBehaviour
 	[ClientRpc]
 	private void TimerClientRpc()
 	{
-		Debug.Log("Timer Lancé");
 		timerDisplay.SetActive(true);
 	}
 

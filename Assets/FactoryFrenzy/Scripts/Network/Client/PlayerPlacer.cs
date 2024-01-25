@@ -24,15 +24,10 @@ public class PlayerPlacer : NetworkBehaviour
 			{
 				SpawnLogic spawnStatus = spawn.GetComponent<SpawnLogic>();
 				Debug.Log(spawnStatus.name + " " + spawnStatus.IsOccupied.Value);
-				if (spawnStatus.IsOccupied.Value)
-				{
-					Debug.Log(spawn.gameObject.name + " occupied");
-				}
-				else
-				{
+				if (!spawnStatus.IsOccupied.Value)
+				{ 
 					Vector3 spawnPosition = new Vector3(spawn.transform.position.x, spawn.transform.position.y + 5.0f, spawn.transform.position.z);
 					spawnStatus.IsOccupied.Value = true;
-					Debug.Log(spawn.gameObject.name + " " + spawnPosition);
 					return spawnPosition;
 				}
 			}

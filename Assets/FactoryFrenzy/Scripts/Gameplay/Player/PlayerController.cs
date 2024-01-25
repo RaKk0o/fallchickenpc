@@ -376,12 +376,12 @@ public class PlayerController : NetworkBehaviour
             _verticalVelocity += Gravity * Time.deltaTime;
         }
     }
-    /*public void LoadCheckPoint()
+    public void LoadCheckPoint()
     {
         _controller.enabled = false;
 		transform.position = Checkpoint;
 		_controller.enabled = true;
-	}*/
+	}
 
     private static float ClampAngle(float lfAngle, float lfMin, float lfMax)
     {
