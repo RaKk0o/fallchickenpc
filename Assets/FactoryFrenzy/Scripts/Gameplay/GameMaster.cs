@@ -1,4 +1,5 @@
 using FrenzyFactory.UI;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
@@ -6,6 +7,8 @@ using System.Runtime.CompilerServices;
 using TMPro;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public class GameMaster : NetworkBehaviour
 {
@@ -17,8 +20,10 @@ public class GameMaster : NetworkBehaviour
 	[SerializeField] private TMP_Text scoreBoardText;
 
 	[SerializeField] private GameObject timerDisplay;
+	[SerializeField] private GameObject startOfGameDisplay;
 	[SerializeField] private GameObject endOfGameDisplay;
 	[SerializeField] private GameObject scoreBoardDisplay;
+
 
 	private string playerScoreBoard;
 	private int playerPosition;
@@ -29,13 +34,13 @@ public class GameMaster : NetworkBehaviour
 		{
 			isFinished.Value = false;
 			isTimerRunning.Value = false;
-			timeRemaining.Value = 10.0f;
+			timeRemaining.Value = 5.0f;
 		}
 	}
 
 	private void Update()
 	{
-		if (isTimerRunning.Value && IsOwner)
+		if ((isTimerRunning.Value) && IsOwner)
 		{
 			if (timeRemaining.Value > 0)
 			{
@@ -46,32 +51,51 @@ public class GameMaster : NetworkBehaviour
 			{
 				timeRemaining.Value = 0;
 				isTimerRunning.Value = false;
-				EndGameServerRpc();
+				if (!isFinished.Value)
+				{
+					timeRemaining.Value = 10f;
+					AllowMovementClientRpc();
+				}
+				else
+				{
+					EndGameServerRpc();
+				}
 			}
 		}
 	}
 
 	public override void OnNetworkSpawn()
 	{
-		isFinished.OnValueChanged += GameStatus;
+		isFinished.OnValueChanged += GameFinished;
 		isTimerRunning.OnValueChanged += TimerStatus;
 		timeRemaining.OnValueChanged += TimeGoingDown;
+
+		NetworkManager.Singleton.SceneManager.OnLoadEventCompleted += LaunchGame;
 	}
-
-
 
 	public override void OnNetworkDespawn()
 	{
-		isFinished.OnValueChanged -= GameStatus;
+		isFinished.OnValueChanged -= GameFinished;
+		
 		isTimerRunning.OnValueChanged -= TimerStatus;
 		timeRemaining.OnValueChanged -= TimeGoingDown;
+
+		NetworkManager.Singleton.SceneManager.OnLoadEventCompleted -= LaunchGame;
 	}
 
-	private void GameStatus(bool previousValue, bool newValue)
+	private void LaunchGame(string sceneName, LoadSceneMode loadSceneMode, List<ulong> clientsCompleted, List<ulong> clientsTimedOut)
+	{
+		if (IsOwner && clientsCompleted.Count == ConnectionApprovalHandler.instance.PlayerCount)
+		{
+			TimerServerRpc();
+		}
+	}
+
+	private void GameFinished(bool previousValue, bool newValue)
 	{
 		isFinished.Value = newValue;
 	}
-
+	
 	private void TimerStatus(bool previousValue, bool newValue)
 	{
 		isTimerRunning.Value = newValue;
@@ -82,8 +106,9 @@ public class GameMaster : NetworkBehaviour
 		timeRemaining.Value = newValue;
 	}
 
+
 	[ServerRpc(RequireOwnership = false)]
-	public void ToggleGameStatusServerRpc()
+	public void ToggleGameFinishedServerRpc()
 	{
 		isFinished.Value = !isFinished.Value;
 	}
@@ -130,12 +155,28 @@ public class GameMaster : NetworkBehaviour
 	[ClientRpc]
 	private void EndGameClientRpc()
 	{
+		NetworkManager.LocalClient.PlayerObject.GetComponent<PlayerController>().enabled = false;
 		endOfGameDisplay.SetActive(true);
+	}
+
+	[ClientRpc]
+	private void AllowMovementClientRpc()
+	{
+		startOfGameDisplay.SetActive(true);
+		NetworkManager.LocalClient.PlayerObject.GetComponent<PlayerInput>().enabled = true;
+		StartCoroutine(StartGameCoroutine(1.0f));
 	}
 
 	private IEnumerator EndGameCoroutine(float waitTime)
 	{
 		yield return new WaitForSeconds(waitTime);
 		ConnectionApprovalHandler.instance.EndRound();
+	}
+
+	private IEnumerator StartGameCoroutine(float waitTime)
+	{
+		yield return new WaitForSeconds(waitTime);
+		startOfGameDisplay.SetActive(false);
+		timerDisplay.SetActive(false);
 	}
 }
