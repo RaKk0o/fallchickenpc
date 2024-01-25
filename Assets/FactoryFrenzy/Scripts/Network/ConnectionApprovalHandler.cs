@@ -18,6 +18,7 @@ namespace FrenzyFactory.UI
 
         private bool gameInProgress;
         public int PlayerCount;
+        public bool isFirstGame = true;
 
         private void Awake()
         {
@@ -55,6 +56,7 @@ namespace FrenzyFactory.UI
         public void EndRound()
         {
             gameInProgress = false;
+            isFirstGame = false;
 			Singleton.LocalClient.PlayerObject.Despawn();
 			Singleton.SceneManager.LoadScene("Lobby", UnityEngine.SceneManagement.LoadSceneMode.Single);
         }

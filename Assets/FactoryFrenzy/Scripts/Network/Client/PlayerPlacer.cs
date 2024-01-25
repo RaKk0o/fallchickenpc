@@ -1,3 +1,4 @@
+using FrenzyFactory.UI;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
@@ -26,7 +27,7 @@ public class PlayerPlacer : NetworkBehaviour
 				Debug.Log(spawnStatus.name + " " + spawnStatus.IsOccupied.Value);
 				if (!spawnStatus.IsOccupied.Value)
 				{ 
-					Vector3 spawnPosition = new Vector3(spawn.transform.position.x, spawn.transform.position.y + 5.0f, spawn.transform.position.z);
+					Vector3 spawnPosition = new Vector3(spawn.transform.position.x, spawn.transform.position.y + 0.0f, spawn.transform.position.z);
 					spawnStatus.IsOccupied.Value = true;
 					return spawnPosition;
 				}
@@ -43,10 +44,14 @@ public class PlayerPlacer : NetworkBehaviour
 		{
 			foreach (ulong id in clientsCompleted)
 			{
-				Vector3 position = GetFreeSpawnpoint();
-				Quaternion rotation = new Quaternion(0, 0, 0, 1);
-				GameObject player = Instantiate(_player, position, rotation);
-				player.GetComponent<NetworkObject>().SpawnAsPlayerObject(id, true);
+				if (!NetworkManager.Singleton.ConnectedClients[id].OwnedObjects.Contains(NetworkManager.ConnectedClients[id].PlayerObject))
+				{
+					Vector3 position = GetFreeSpawnpoint();
+					Quaternion rotation = new Quaternion(0, 0, 0, 1);
+					GameObject player = Instantiate(_player, position, rotation);
+					player.GetComponent<NetworkObject>().SpawnAsPlayerObject(id, true);
+				}
+				
 			}
 		}
 	}

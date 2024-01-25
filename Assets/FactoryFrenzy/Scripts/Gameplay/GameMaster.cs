@@ -163,6 +163,7 @@ public class GameMaster : NetworkBehaviour
 	{
 		startOfGameDisplay.SetActive(true);
 		NetworkManager.LocalClient.PlayerObject.GetComponent<PlayerInput>().enabled = true;
+		NetworkManager.LocalClient.PlayerObject.GetComponent<CharacterController>().enabled = true;
 		StartCoroutine(StartGameCoroutine(1.0f));
 	}
 
